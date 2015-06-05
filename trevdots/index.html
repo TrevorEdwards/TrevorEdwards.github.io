@@ -1,0 +1,237 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>YouAreADot</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>YouAreADot</h1>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+
+	game.load.image('dot', 'res/donut.png');
+    game.load.image('ply', 'res/goodcirc.png');
+	game.load.image('home', 'res/home.png');
+	game.load.image('spike', 'res/spike.png');
+	game.load.audio('cetus', 'res/cetus2.mp3');
+
+}
+
+var CULL_DIST = 1000;
+var MIN_DOTS = 25;
+var SPAWN_DIST = 100;
+var HOME_CULL = 100;
+var CREATE_DIST = 500;
+
+var home;
+var dots = new Array();
+var dotgr;
+var player;
+var soundman;
+
+
+function create() {
+	
+	home = game.add.sprite(0, 0, 'home');
+	game.physics.arcade.enable(home);
+	home.body.immovable = true;
+	
+	game.physics.startSystem(Phaser.Physics.ARCADE);
+	
+	dotgr = game.add.group();
+	dotgr.enableBody = true;
+	
+    // The player and its settings
+    player = game.add.sprite(0, 0, 'ply');
+	player.data = { 
+	mass: 1,
+	kills: 0,
+	maxdist: 0,
+	velocity: calcVelocity( 1 )
+}
+	game.physics.arcade.enable(player);
+
+    //  Player physics properties. Give the little guy a slight bounce.
+    player.body.collideWorldBounds = false;
+	
+	//trev camera
+	
+	game.camera.bounds = null;
+	//game.camera.follow( player, game.camera.FOLLOW_TOPDOWN);
+
+    //  Our controls.
+    cursors = game.input.keyboard.createCursorKeys();
+	
+	var soundman = game.add.audio('cetus');
+	soundman.play();
+    
+}
+
+function update() {
+	
+
+	//BGCOLOR
+	
+	//game.stage.setBackgroundColor('#'+(250).toString(16)+(250).toString(16)+(50).toString(16));
+	
+	//Collisions
+	game.physics.arcade.collide(home, dotgr);
+	game.physics.arcade.overlap(player, dotgr, eat, null, this);
+	game.physics.arcade.overlap(dotgr, dotgr, eat, null, this);
+	
+	var dist = homeDistance( player );
+	doSize( player, player.data.mass);
+	adjustCam( player );
+    //  Reset the players velocity (movement)
+    player.body.velocity.x = 0;
+	player.body.velocity.y = 0;
+
+    if (cursors.left.isDown)
+    {
+        //  Move to the left
+        player.body.velocity.x = -player.data.velocity;
+
+    }
+    else if (cursors.right.isDown)
+    {
+        //  Move to the right
+        player.body.velocity.x = player.data.velocity;
+    }
+	
+	else if (cursors.up.isDown)
+    {
+        player.body.velocity.y = -player.data.velocity;
+    }
+	else if (cursors.down.isDown)
+    {
+        player.body.velocity.y = player.data.velocity;
+		//makecat( player );
+    }
+    else
+    {
+        //  Stand still
+    }
+	
+	//Construct Dots
+	if( dist > SPAWN_DIST ){
+		if( dots.length < MIN_DOTS ){
+			var rand = Math.random() * 6.28;
+			makedot(player.position.x + CREATE_DIST * Math.cos(rand), player.position.y + CREATE_DIST * Math.sin(rand));
+		}
+	}
+	
+	//Dot AI
+	dots.forEach(dotThink);
+	dots.forEach(dotCull);
+    
+}
+
+function makedot( px, py ){
+	var dot = dotgr.create(px,py,'dot');
+    dot.body.collideWorldBounds = false;
+	dots.push( dot );
+	var siz = distToSize( homeDistance(dot) );
+	dot.data = {
+		mass: siz,
+		cull: false,
+		act: 4,
+		velocity: calcVelocity( siz )
+	};
+	doSize( dot, siz );
+}
+
+function dotThink( dot ){
+	dot.body.velocity.x = 0;
+	dot.body.velocity.y = 0;
+	
+	var dist = Phaser.Math.distanceRounded( player.position.x,player.position.y,dot.position.x,dot.position.y );	
+	if ( dist > CULL_DIST ){
+			dot.data.cull = true;
+		} else {
+		if (Phaser.Math.chanceRoll( 2 )){
+			dot.data.act = Math.floor((Math.random() * 5) );
+		}
+		if ( dot.data.act == 0) {
+				dot.body.velocity.x = dot.data.velocity;
+			} 
+			else if  (dot.data.act == 1) {
+				dot.body.velocity.x = -dot.data.velocity;
+			}
+			else if  (dot.data.act == 2) {
+				dot.body.velocity.y = dot.data.velocity;
+			}
+			else if  (dot.data.act == 3) {
+				dot.body.velocity.y = -dot.data.velocity;
+			}
+	}
+}
+
+function dotCull( dot ){
+	if( dot.data.cull )
+		removeDot( dot );
+}
+
+function removeDot( dot ){
+	dot.kill();
+	var dex = dots.indexOf( dot );
+	dots.splice( dex, 1 );
+}
+
+function doSize( ply, mass ){
+	var mod = Math.sqrt( mass / 128 );
+	ply.scale.setTo(mod, mod);
+	ply.data.velocity = calcVelocity( ply.data.mass);
+}
+
+function distToSize( dist ){
+	var d = dist / 200 + Math.random() - (SPAWN_DIST + CREATE_DIST) / 200 + .03;
+	if ( d < 0.1 ){
+		d = .10
+	}
+	return dist / 200 + Math.random() - (SPAWN_DIST + CREATE_DIST) / 200 + .03;	
+}
+
+function adjustCam( ply ){
+	game.camera.setPosition(ply.position.x + ply.scale.x * 64 - 400 ,ply.position.y + ply.scale.y * 64 - 300 );
+}
+
+function homeDistance( ply ){
+	return Phaser.Math.distanceRounded( ply.position.x,ply.position.y, 0, 0);
+}
+
+function calcVelocity(mass){
+	return 35 / (mass) + 160;
+}
+
+function eat(ply, dot){
+	if (ply == dot)
+		return;
+	var ds = dot.data.mass;
+	var ps = ply.data.mass;
+	if( ps > ds ){
+		ply.data.mass = ply.data.mass + ds;
+		doSize( ply, ply.data.mass );
+		dot.kill();
+	} else{
+		dot.data.mass = dot.data.mass + ds;
+		doSize( dot, dot.data.mass );
+		ply.kill();
+	}
+}
+
+
+</script>
+Game by <a href = "http://trevoredwards.github.io"> Trevor Edwards </href>
+</body>
+</html>

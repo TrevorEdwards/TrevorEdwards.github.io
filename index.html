@@ -4,89 +4,69 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=640">
-
-    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-
-    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+	
+	<link rel="stylesheet" href="jquery.terminal.css">
+	<link rel="stylesheet" href="style.css">
+	
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
-    </script>
+	<script type="text/javascript" src="jquery.terminal-0.8.8.min.js"></script>
+	
     <title>Trevor's Site</title>
   </head>
 
   <body>
-    <!-- I see you are looking at my code.  ( ")> -->
-    <div class="shell">
-
-      <header>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <h1>trevoredwards.GitHub.io</h1>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-      </header>
-
-      <div id="no-downloads">
-        <span class="inner">
-        </span>
-      </div>
-
-
-      <span class="banner-fix"></span>
-
-
-      <section id="main_content">
-        <h3>
-<a id="my-name-is-trevor" class="anchor" href="#my-name-is-trevor" aria-hidden="true"><span class="octicon octicon-link"></span></a>My name is Trevor!</h3>
-
-<p style="opacity:0">I'm a student at <a href="https://www.cornell.edu/" style="color:red">Cornell University</a>.  I study Computer Science and plan to minor in Electrical and Computer Engineering.</p>
-<p style="opacity:0">Here are a few projects that I have worked on:</p>
-	<ul style="opacity:0">
-  <li><a href="https://github.com/genkimarshall/bigredapp-android">Big Red App</a></li>
-	<li><a href="http://challengepost.com/software/master-speech">Master Speech</a></li>
-	<li><a href="http://challengepost.com/software/leap-theremin">Leap Theremin</a></li>
-	<li><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=233263749">Labyrinth</a></li>
-	<li><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=173087050">Melons 2 Melons</a></li>
-	</ul>
-      </section>
-
-      <footer>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p style="opacity:0"><a href="https://github.com/TrevorEdwards" style="color:#111188">GitHub</a>  &#8226  <a href="https://www.linkedin.com/pub/trevor-edwards/99/6a3/517">LinkedIn</a> &#8226  <a href="http://steamcommunity.com/id/tb002/myworkshopfiles/" style="color:#00cc00">Workshop</a> &#8226 <a href="mailto:trevedwa@gmail.com" style="color:gold">Email</a></p>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-        <span class="octocat"></span>
-      </footer>
-
-    </div>
-
-
+	<div id="terminal" class="terminal" style="height: 800px;"></div>
+	<script>
+		jQuery(function($, undefined) {
+    $('#terminal').terminal(function(command, term) {
+        if (command !== '') {
+     
+				switch(command){
+					case 'help':term.echo('about: see who I am \nemail: contact me (I\'d love to hear from you!) \ngithub: see my github page \nlinkedin see my linkedin page \nproject: learn about my past projects \nworkshop: see my steam workshop projects'); 
+						break;
+					case 'about': term.echo('I\'m a sophomore at Cornell University. I study Computer Science and plan to minor in Electrical and Computer Engineering.');
+						break;
+					case 'project': term.echo('A few of my personal projects are \nbig_red_app\nmaster_speech\nleap_theremin\nlabyrinth\nmelons2melons\nType project [project_name] to find out more!');
+						break;
+					case 'email': term.echo('I would love to hear from you! You can contact me at trevedwa@gmail.com');
+						break;
+					case 'github': term.echo('Check out my github at https://github.com/TrevorEdwards'); 
+						break;
+					case 'linkedin': term.echo('View my LinkedIn at https://www.linkedin.com/in/trevedwards'); 
+						break;
+					case 'workshop': term.echo('I modded games in high school. See my favorites on my Steam Workshop: http://steamcommunity.com/id/tb002/myworkshopfiles/'); 
+						break;
+					case 'project big_red_app': term.echo('I contribute to an open source Android app for Cornell students, and now I own the repository for it!  See it here: https://github.com/TrevorEdwards/bigredapp-android'); 
+						break;
+					case 'project master_speech': term.echo('We made a speech-practicing app at BrickHack 2015.  Check it out: http://devpost.com/software/master-speech'); 
+						break;
+					case 'project leap_theremin': term.echo('We made a theremin using a leap motion at my first hackathon, HackBU.  Take a look: http://devpost.com/software/leap-theremin'); 
+						break;
+					case 'project labyrinth': term.echo('One of my mods from high school: players try to escape a maze inhabited by minotaurs.  See it here: https://steamcommunity.com/sharedfiles/filedetails/?id=233263749'); 
+						break;
+					case 'project melons2melons': term.echo('What if you could play pictionary in 3d?  That\'s what I set out try make here: https://steamcommunity.com/sharedfiles/filedetails/?id=173087050'); 
+						break;
+					
+					default: 
+						try{
+							var result = window.eval(command);
+							if (result !== undefined) {
+								term.echo(new String(result));
+							}
+						} catch(e) {
+							term.echo('Unrecognized command: '+e+'. Type help for commands');
+						}
+						break;
+				}
+        } else {
+           term.echo('');
+        }
+    }, {
+        greetings: 'Welcome to Trevor\'s Personal Site!  Type help for commands',
+        name: 'TrevorTerminal', //not necessary
+        height: 800,
+        prompt: '> '});
+});
+	</script>
   </body>
-
-  <script>
-    // Text fadein
-    d3.selectAll("h2,p,ul").style("opacity",0)
-      .transition()
-      .delay(function(d, i) { return i * 1200; })
-      .duration(2000)
-      .style("opacity",1);
-
-      var bod = d3.select('body');
-      bod.on("click", function(){
-        d3.selectAll("h2,p,ul").transition()
-        .style("opacity",1);
-      });
-  </script>
 </html>

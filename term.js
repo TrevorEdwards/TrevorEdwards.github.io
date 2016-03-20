@@ -1,5 +1,3 @@
-var pop = new Audio('pop.WAV');
-
 jQuery(function($, undefined) {
 $('#terminal').terminal(function(command, term) {
     if (command !== '') {
@@ -7,7 +5,6 @@ $('#terminal').terminal(function(command, term) {
 			command = command.trim();
 			var custecho = function(arg){
 				term.echo(arg);
-				responsiveVoice.speak(arg);
 			}
 
 		switch(command){
@@ -27,7 +24,7 @@ $('#terminal').terminal(function(command, term) {
 				break;
 			case 'project big_red_app': custecho('I maintain an open source Android app for Cornell students, and now I own the repository for it!  See it here: https://github.com/TrevorEdwards/bigredapp-android');
 				break;
-			case 'project red_events': custecho('I needed a back end for Big Red App, so I created the RedEvents API.  See it here: https://github.com/TrevorEdwards/RedEvents');
+			case 'project red_events': custecho('I needed a back-end for Big Red App, so I created the RedEvents API.  See it here: https://github.com/TrevorEdwards/RedEvents');
 				break;
 			case 'project master_speech': custecho('We made a speech-practicing app at BrickHack 2015.  Check it out: http://devpost.com/software/master-speech');
 				break;
@@ -71,13 +68,8 @@ $('#terminal').terminal(function(command, term) {
 			'email',
 			'github'
 		],
-		keypress: function(event, terminal){
-			pop = new Audio('pop.WAV'); //Allows overlap
-			pop.play();
-		},
 		greetings: function(callback){
 			const greet = 'Welcome to Trevor\'s Personal Site!  Type help for commands.';
-			setTimeout(function(){ responsiveVoice.speak(greet); }, 500);
 			callback(greet);
 		},
     name: 'TrevorTerminal', //not necessary

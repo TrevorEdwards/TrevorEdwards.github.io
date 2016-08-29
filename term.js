@@ -10,7 +10,7 @@ $('#terminal').terminal(function(command, term) {
 		switch(command){
 			case 'help':custecho('about: see who I am \nemail: contact me (I\'d love to hear from you!) \ngithub: see my github page \nlinkedin: see my linkedin page \nproject: learn about my past projects \nworkshop: see my steam workshop projects');
 				break;
-			case 'about': custecho('I\'m a senior at Cornell University. I study Computer Science and minor in Electrical and Computer Engineering. Right now, I\'m interning at Fidelity Investments.');
+			case 'about': custecho('I\'m a senior at Cornell University. I study Computer Science and minor in Electrical and Computer Engineering.');
 				break;
 			case 'project': custecho('A few of my personal projects are \nbig_red_hacks\nbig_red_app\nred_events\nmaster_speech\nleap_theremin\nlabyrinth\nmelons2melons\nType project [project_name] to find out more!');
 				break;

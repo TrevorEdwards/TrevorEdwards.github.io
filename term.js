@@ -20,9 +20,9 @@ $('#terminal').terminal(function(command, term) {
 				break;
 			case 'workshop': custecho('I modded games in high school. See my favorites on my Steam Workshop: http://steamcommunity.com/id/tb002/myworkshopfiles/');
 				break;
-			case 'project big_red_hacks': custecho('I\'m leading web development for BigRed//Hacks this coming fall! See our work: http://bigredhacks.com/');
+			case 'project big_red_hacks': custecho('I led web development for BigRed//Hacks in Fall 2016! See their latest work: http://bigredhacks.com/');
 				break;
-			case 'project big_red_app': custecho('I maintain an open source Android app for Cornell students, and now I own the repository for it!  See it here: https://github.com/TrevorEdwards/bigredapp-android');
+			case 'project big_red_app': custecho('I maintained an open source Android app for Cornell students.  See it here: https://github.com/TrevorEdwards/bigredapp-android');
 				break;
 			case 'project red_events': custecho('I needed a back-end for Big Red App, so I created the RedEvents API.  See it here: https://github.com/TrevorEdwards/RedEvents');
 				break;
